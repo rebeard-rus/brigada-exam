@@ -21,7 +21,7 @@
     --txt:#ece7dd;
     --muted:#8f8a94;
     --line:rgba(130,150,180,.16);
-    --card:rgba(18,18,26,.92);
+    --card:#14141d;
     --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
     --disp:"Arial Black","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
     --body:system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -42,28 +42,31 @@
   .wrap{width:100%;max-width:720px;position:relative;z-index:2}
 
   /* ───── VHS / CRT OVERLAY ───── */
-  .vhs{position:fixed;inset:0;pointer-events:none;z-index:9998}
-  .vhs .scan{
+  /* Атмосфера — на ЗАДНЕМ плане (под карточками), чтобы не мешать чтению */
+  .vhs-bg{position:fixed;inset:0;pointer-events:none;z-index:0}
+  .vhs-bg .scan{
     position:absolute;inset:0;
     background:repeating-linear-gradient(0deg,
-      rgba(0,0,0,0) 0 2px, rgba(0,0,0,.32) 2px 3px);
+      rgba(0,0,0,0) 0 2px, rgba(0,0,0,.30) 2px 3px);
     animation:flicker 5s steps(60) infinite;
   }
-  .vhs .grain{
-    position:absolute;inset:-50%;opacity:.05;mix-blend-mode:overlay;
+  .vhs-bg .grain{
+    position:absolute;inset:-50%;opacity:.06;mix-blend-mode:overlay;
     background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');
     animation:grain .4s steps(4) infinite;
   }
-  .vhs .track{
+  .vhs-bg .track{
     position:absolute;left:0;right:0;height:90px;
     background:linear-gradient(180deg,transparent,rgba(255,255,255,.10),transparent);
     filter:blur(2px);opacity:.5;mix-blend-mode:screen;
     animation:roll 7s linear infinite;
   }
-  .vhs::after{ /* vignette */
+  .vhs-bg::after{ /* vignette */
     content:"";position:absolute;inset:0;
     background:radial-gradient(120% 100% at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%);
   }
+  /* Уголки-HUD — поверх всего, но только по краям экрана */
+  .vhs-hud{position:fixed;inset:0;pointer-events:none;z-index:9998}
   .hud-tag{
     position:absolute;font-family:var(--mono);font-size:12px;letter-spacing:2px;
     color:rgba(236,231,221,.72);text-shadow:0 0 8px rgba(37,208,230,.4);
@@ -234,22 +237,36 @@
     border:2px solid var(--gold);margin:8px auto 12px;
     box-shadow:0 0 20px rgba(240,193,75,.25);filter:contrast(1.05) saturate(.92)}
 
+  /* Постер каста на главной */
+  .hero{
+    display:block;width:100%;max-width:420px;margin:0 auto 22px;
+    border-radius:12px;border:1px solid var(--line);
+    box-shadow:0 0 30px rgba(240,193,75,.12), 0 18px 44px rgba(0,0,0,.6);
+    filter:contrast(1.04) saturate(.97);
+  }
+
   .hidden{display:none}
   .fade{animation:fade .4s ease}
   @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
   @media (prefers-reduced-motion:reduce){
-    .vhs .scan,.vhs .grain,.vhs .track,h1,.hud .timer.warn{animation:none}
-    .vhs .track{display:none}
+    .vhs-bg .scan,.vhs-bg .grain,.vhs-bg .track,h1,.hud .timer.warn{animation:none}
+    .vhs-bg .track{display:none}
+  }
+  @media (max-width:600px){
+    .vhs-hud .bl,.vhs-hud .br{display:none}
   }
 </style>
 </head>
 <body>
-<!-- VHS / CRT наложение -->
-<div class="vhs" aria-hidden="true">
+<!-- VHS-атмосфера на заднем плане (под контентом) -->
+<div class="vhs-bg" aria-hidden="true">
   <div class="grain"></div>
   <div class="track"></div>
   <div class="scan"></div>
+</div>
+<!-- Уголки-HUD поверх, только по краям экрана -->
+<div class="vhs-hud" aria-hidden="true">
   <div class="hud-tag tl">▶&nbsp;PLAY&nbsp;&nbsp;<span class="dim">SP</span></div>
   <div class="hud-tag tr"><span class="rec">●</span>&nbsp;REC&nbsp;&nbsp;<span id="vhs-time">0:00:00</span></div>
   <div class="hud-tag bl">БРИГАДА&nbsp;<span class="dim">·</span>&nbsp;VHS</div>
@@ -265,6 +282,7 @@
 
   <!-- INTRO -->
   <div class="card fade" id="screen-intro">
+    <img class="hero" src="cast.png" alt="Герои сериала «Бригада»: Космос, Пчёла, Фил, Саша Белый и Ольга">
     <p class="lead">Это <b>хардкор</b>. Комиссия двора собрала вопросы для тех, кто знает «Бригаду» (2002) до последней реплики: редкие цитаты, точные даты, второй план, изнанка сюжета. Лёгких вопросов здесь нет — угадать не выйдет, только знать.</p>
     <ul class="rules">
       <li>Вопросов — <b id="q-count">…</b>. Все — на детали, а не на общие места.</li>
