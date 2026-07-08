@@ -287,6 +287,30 @@
   .footer{text-align:center;color:#5a615a;font-family:var(--mono);font-size:10.5px;margin-top:28px;letter-spacing:1px}
   .footer b{color:var(--amber)}
 
+  /* ───── НАВИГАЦИЯ ПО ВОПРОСАМ ───── */
+  .qnav{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:0 0 20px}
+  .qn{
+    width:29px;height:29px;display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:12px;font-weight:600;
+    border:1px solid var(--line-2);background:rgba(0,0,0,.25);color:var(--muted);
+    cursor:pointer;user-select:none;transition:border-color .12s,color .12s,background .12s;
+  }
+  .qn:hover{border-color:var(--amber);color:var(--amber)}
+  .qn.done{color:var(--amber);border-color:var(--amber-deep);background:rgba(230,173,56,.07)}
+  .qn.cur{color:#0b0b06;border-color:var(--amber);background:var(--amber);box-shadow:0 0 12px rgba(230,173,56,.3)}
+  .qn.lock{opacity:.32;cursor:default;pointer-events:none;border-style:dashed;background:transparent}
+  .navrow{display:flex;gap:12px;margin-top:18px}
+  .navrow .btn{flex:1}
+  .btn:disabled,.btn[disabled]{opacity:.38;cursor:default;pointer-events:none;transform:none;box-shadow:0 1px 0 var(--amber-deep)}
+  .btn.ghost:disabled,.btn.ghost[disabled]{box-shadow:none}
+  /* Telegram CTA */
+  .btn-tg{
+    width:100%;margin-bottom:12px;color:#fff;
+    background:linear-gradient(180deg,#2aabee,#229ed9);
+    box-shadow:0 5px 0 #17607f,0 0 22px rgba(42,171,238,.3);
+  }
+  .btn-tg:active{transform:translateY(4px);box-shadow:0 1px 0 #17607f}
+
   .hidden{display:none}
   .fade{animation:fade .4s ease}
   @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -360,12 +384,14 @@
       <span class="timer" id="timer">06:00</span>
     </div>
     <div class="bar"><i id="bar"></i></div>
+    <div class="qnav" id="qnav"></div>
     <div class="qnum" id="qnum">Вопрос 1</div>
     <div class="qtext" id="qtext">…</div>
     <div id="qphoto"></div>
     <div class="opts" id="opts"></div>
     <div class="verdict-line" id="expl"></div>
-    <div class="next" id="next-wrap">
+    <div class="navrow" id="navrow">
+      <button class="btn ghost" id="prev-btn" onclick="Quiz.prev()">← Назад</button>
       <button class="btn" id="next-btn" onclick="Quiz.next()">Дальше →</button>
     </div>
   </div>
@@ -390,9 +416,10 @@
       <div class="seal">Комиссия двора · <span id="cert-date"></span> · печать ◉</div>
     </div>
 
+    <button class="btn btn-tg" onclick="Quiz.shareTelegram()">✈&nbsp;&nbsp;Отправить в Telegram</button>
     <div class="btn-row">
       <button class="btn ghost" onclick="Quiz.restart()">Пересдать</button>
-      <button class="btn" onclick="Quiz.share()">Поделиться</button>
+      <button class="btn ghost" onclick="Quiz.share()">Ещё способы</button>
     </div>
     <div class="footer">Сделано с уважением к братве · <b>«Бригада»</b> · 2002</div>
   </div>
@@ -526,11 +553,20 @@ const RANKS = [
 const TOTAL_TIME = 360;
 
 const Quiz = {
-  i: 0, correct: 0, answered: false, timeLeft: TOTAL_TIME, timer: null,
+  i: 0, answers: [], order: [], maxReached: 0, correct: 0, timeLeft: TOTAL_TIME, timer: null,
 
   start(){
     show('screen-quiz');
-    this.i=0; this.correct=0; this.timeLeft=TOTAL_TIME;
+    this.i=0;
+    this.answers=QUESTIONS.map(()=>null);   // выбранный ОРИГИНАЛЬНЫЙ индекс варианта (или null)
+    this.maxReached=0;
+    this.timeLeft=TOTAL_TIME;
+    // Перемешиваем варианты в каждом вопросе, чтобы правильный не оказывался всегда на одном месте
+    this.order=QUESTIONS.map(q=>{
+      const idx=q.o.map((_,k)=>k);
+      for(let k=idx.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[idx[k],idx[j]]=[idx[j],idx[k]];}
+      return idx;
+    });
     this.startTimer();
     this.render();
   },
@@ -554,64 +590,104 @@ const Quiz = {
   },
 
   render(){
-    this.answered=false;
+    const total=QUESTIONS.length;
     const item=QUESTIONS[this.i];
-    document.getElementById('progress-text').textContent=`Вопрос ${this.i+1} из ${QUESTIONS.length}`;
-    document.getElementById('qnum').innerHTML=`Вопрос <b>${String(this.i+1).padStart(2,'0')}</b> / ${String(QUESTIONS.length).padStart(2,'0')}`;
+    const ord=this.order[this.i];
+    const sel=this.answers[this.i];        // оригинальный индекс выбранного варианта или null
+    const answered=sel!==null;
+
+    document.getElementById('progress-text').textContent=`Вопрос ${this.i+1} из ${total}`;
+    document.getElementById('qnum').innerHTML=`Вопрос <b>${String(this.i+1).padStart(2,'0')}</b> / ${String(total).padStart(2,'0')}`;
     document.getElementById('qtext').textContent=item.q;
     const ph=document.getElementById('qphoto');
     if(item.photo){
       ph.innerHTML=`<img src="${item.photo}" alt="фото" class="q-photo" onerror="this.parentNode.style.display='none'">`;
       ph.style.display='block';
     }else{ ph.innerHTML=''; ph.style.display='none'; }
-    document.getElementById('bar').style.width=`${(this.i/QUESTIONS.length)*100}%`;
-    const expl=document.getElementById('expl');
-    expl.className='verdict-line'; expl.innerHTML='';
-    document.getElementById('next-wrap').classList.remove('show');
+    const done=this.answers.filter(a=>a!==null).length;
+    document.getElementById('bar').style.width=`${(done/total)*100}%`;
 
     const letters=['А','Б','В','Г'];
     const opts=document.getElementById('opts');
     opts.innerHTML='';
-    item.o.forEach((text,idx)=>{
+    ord.forEach((origIdx,pos)=>{
       const b=document.createElement('button');
       b.className='opt';
-      b.innerHTML=`<span class="k">${letters[idx]}</span><span>${text}</span>`;
-      b.onclick=()=>this.answer(idx,b);
+      b.innerHTML=`<span class="k">${letters[pos]}</span><span>${item.o[origIdx]}</span>`;
+      if(answered){
+        b.setAttribute('disabled','');
+        if(origIdx===item.a) b.classList.add('correct');
+        else if(origIdx===sel) b.classList.add('wrong');
+      }else{
+        b.onclick=()=>this.answer(origIdx);
+      }
       opts.appendChild(b);
     });
+
+    const expl=document.getElementById('expl');
+    if(answered){
+      const ok=sel===item.a;
+      expl.className='verdict-line show '+(ok?'ok':'no');
+      expl.innerHTML=(ok?'<b>В точку!</b> ':'<b>Мимо.</b> ')+item.e;
+    }else{
+      expl.className='verdict-line'; expl.innerHTML='';
+    }
+
+    this.renderNav();
+    this.updateControls();
   },
 
-  answer(idx,btn){
-    if(this.answered) return;
-    this.answered=true;
-    const item=QUESTIONS[this.i];
-    const all=document.querySelectorAll('#opts .opt');
-    all.forEach((el,i)=>{
-      el.setAttribute('disabled','');
-      if(i===item.a) el.classList.add('correct');
+  renderNav(){
+    const nav=document.getElementById('qnav');
+    nav.innerHTML='';
+    QUESTIONS.forEach((_,idx)=>{
+      const d=document.createElement('div');
+      d.className='qn';
+      d.textContent=idx+1;
+      if(idx===this.i) d.classList.add('cur');
+      else if(this.answers[idx]!==null) d.classList.add('done');
+      if(idx>this.maxReached){ d.classList.add('lock'); }
+      else { d.onclick=()=>this.go(idx); }
+      nav.appendChild(d);
     });
-    const expl=document.getElementById('expl');
-    if(idx===item.a){
-      this.correct++;
-      expl.className='verdict-line ok show';
-      expl.innerHTML=`<b>В точку!</b> ${item.e}`;
-    }else{
-      btn.classList.add('wrong');
-      expl.className='verdict-line no show';
-      expl.innerHTML=`<b>Мимо.</b> ${item.e}`;
-    }
-    const nb=document.getElementById('next-btn');
-    nb.textContent = this.i===QUESTIONS.length-1 ? 'Узнать масть →' : 'Дальше →';
-    document.getElementById('next-wrap').classList.add('show');
   },
+
+  updateControls(){
+    const total=QUESTIONS.length;
+    const prev=document.getElementById('prev-btn');
+    const next=document.getElementById('next-btn');
+    prev.disabled=this.i===0;
+    const answered=this.answers[this.i]!==null;
+    next.textContent=this.i===total-1?'Узнать масть →':'Дальше →';
+    next.disabled=!answered;
+  },
+
+  answer(origIdx){
+    if(this.answers[this.i]!==null) return;   // ответ фиксируется один раз
+    this.answers[this.i]=origIdx;
+    this.maxReached=Math.max(this.maxReached, this.i+1);
+    this.render();
+  },
+
+  go(j){
+    if(j<0 || j>=QUESTIONS.length || j>this.maxReached || j===this.i) return;
+    this.i=j;
+    this.render();
+    const q=document.getElementById('screen-quiz');
+    q.classList.add('fade'); setTimeout(()=>q.classList.remove('fade'),400);
+  },
+
+  prev(){ if(this.i>0) this.go(this.i-1); },
 
   next(){
-    if(this.i<QUESTIONS.length-1){ this.i++; this.render(); document.getElementById('screen-quiz').classList.add('fade'); setTimeout(()=>document.getElementById('screen-quiz').classList.remove('fade'),400); }
-    else this.finish();
+    if(this.answers[this.i]===null) return;   // нельзя идти дальше, не ответив
+    if(this.i===QUESTIONS.length-1) this.finish();
+    else this.go(this.i+1);
   },
 
   finish(){
     clearInterval(this.timer);
+    this.correct=this.answers.filter((a,idx)=>a!==null && a===QUESTIONS[idx].a).length;
     const ratio=this.correct/QUESTIONS.length;
     const rank=RANKS.find(r=>ratio>=r.min);
     show('screen-result');
@@ -632,9 +708,18 @@ const Quiz = {
 
   restart(){ show('screen-intro'); },
 
-  share(){
+  resultText(){
     const name=document.getElementById('cert-name').value.trim()||'Пацан';
-    const txt=`${name} прошёл экзамен по сериалу «Бригада»: ${this.correct}/${QUESTIONS.length}, масть — «${this._rank.name}». А ты кто по бригаде? Проверься:`;
+    return `${name} прошёл экзамен по сериалу «Бригада»: ${this.correct}/${QUESTIONS.length}, масть — «${this._rank.name}». А ты кто по бригаде? Проверься:`;
+  },
+
+  shareTelegram(){
+    const url='https://t.me/share/url?url='+encodeURIComponent(location.href)+'&text='+encodeURIComponent(this.resultText());
+    window.open(url,'_blank','noopener');
+  },
+
+  share(){
+    const txt=this.resultText();
     if(navigator.share){
       navigator.share({title:'Экзамен по «Бригаде»', text:txt, url:location.href}).catch(()=>{});
     }else{
