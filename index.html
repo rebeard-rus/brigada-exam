@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Экзамен по сериалу «Бригада» — Аттестация пацана</title>
+<meta name="description" content="Официальная аттестация на знание культового сериала «Бригада» (2002). Пройди экзамен и узнай, кто ты по масти.">
+<meta property="og:title" content="Экзамен по сериалу «Бригада»">
+<meta property="og:description" content="Не важно, кто ты. Важно, что ты знаешь. Сдай аттестацию пацана.">
+<meta property="og:type" content="website">
+<style>
+  :root{
+    --gold:#d4af37;
+    --gold-soft:#e8c86a;
+    --bg:#0b0b0d;
+    --bg2:#141318;
+    --card:#1a1820;
+    --line:#2c2833;
+    --red:#8b1a1a;
+    --green:#2e7d32;
+    --txt:#eae6dc;
+    --muted:#9a9488;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Georgia","Times New Roman",serif;
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #241f14 0%, transparent 60%),
+      linear-gradient(180deg,#0b0b0d 0%, #101014 100%);
+    color:var(--txt);
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:24px 16px 64px;
+    line-height:1.5;
+  }
+  .wrap{width:100%;max-width:720px}
+
+  /* Header */
+  .top{
+    text-align:center;
+    padding:14px 0 22px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:22px;
+  }
+  .crest{
+    font-size:12px;letter-spacing:4px;text-transform:uppercase;
+    color:var(--muted);margin-bottom:10px;
+  }
+  h1{
+    font-size:clamp(30px,7vw,52px);
+    letter-spacing:2px;
+    color:var(--gold);
+    text-shadow:0 2px 0 #000, 0 0 24px rgba(212,175,55,.25);
+    font-weight:700;
+    line-height:1.05;
+  }
+  h1 .q{color:var(--txt)}
+  .sub{color:var(--muted);margin-top:10px;font-style:italic;font-size:15px}
+
+  .card{
+    background:linear-gradient(180deg,var(--card),#151319);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:26px 24px;
+    box-shadow:0 20px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.03);
+  }
+
+  /* Intro */
+  .lead{font-size:17px;color:#d8d3c7;margin-bottom:18px}
+  .rules{list-style:none;margin:8px 0 24px}
+  .rules li{padding:8px 0 8px 28px;position:relative;color:#cfc9bc;border-bottom:1px dashed var(--line)}
+  .rules li:last-child{border-bottom:0}
+  .rules li::before{content:"★";position:absolute;left:0;color:var(--gold);top:8px}
+
+  .btn{
+    display:inline-block;width:100%;
+    background:linear-gradient(180deg,var(--gold-soft),var(--gold));
+    color:#1a1408;border:none;border-radius:10px;
+    padding:16px 20px;font-size:18px;font-weight:700;
+    font-family:inherit;letter-spacing:1px;cursor:pointer;
+    text-transform:uppercase;
+    box-shadow:0 6px 0 #7d6516, 0 10px 24px rgba(0,0,0,.4);
+    transition:transform .05s ease, box-shadow .05s ease;
+  }
+  .btn:active{transform:translateY(4px);box-shadow:0 2px 0 #7d6516}
+  .btn.ghost{
+    background:transparent;color:var(--gold);
+    border:1px solid var(--gold);box-shadow:none;
+  }
+  .btn.ghost:active{transform:none}
+  .btn-row{display:flex;gap:12px;margin-top:14px}
+  .btn-row .btn{width:auto;flex:1;font-size:15px;padding:13px}
+
+  /* Progress + timer */
+  .hud{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-size:14px;color:var(--muted)}
+  .hud .timer{font-variant-numeric:tabular-nums;color:var(--gold);font-weight:bold;letter-spacing:1px}
+  .hud .timer.warn{color:#ff6b6b;animation:pulse .8s infinite}
+  @keyframes pulse{50%{opacity:.45}}
+  .bar{height:6px;background:#26232c;border-radius:6px;overflow:hidden;margin-bottom:22px}
+  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));transition:width .3s ease}
+
+  .qnum{color:var(--muted);font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+  .qtext{font-size:22px;color:#fff;margin-bottom:20px;line-height:1.35}
+  .opts{display:grid;gap:12px}
+  .opt{
+    text-align:left;background:#201d27;border:1px solid var(--line);
+    color:var(--txt);border-radius:10px;padding:15px 16px;font-size:16px;
+    font-family:inherit;cursor:pointer;display:flex;gap:12px;align-items:center;
+    transition:border-color .15s, background .15s, transform .05s;
+  }
+  .opt:hover{border-color:var(--gold);background:#262230}
+  .opt:active{transform:scale(.995)}
+  .opt .k{
+    flex:0 0 30px;height:30px;border-radius:50%;
+    background:#15121b;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:bold;color:var(--gold);font-size:14px;
+  }
+  .opt.correct{border-color:var(--green);background:rgba(46,125,50,.18)}
+  .opt.correct .k{background:var(--green);color:#fff;border-color:var(--green)}
+  .opt.wrong{border-color:var(--red);background:rgba(139,26,26,.18)}
+  .opt.wrong .k{background:var(--red);color:#fff;border-color:var(--red)}
+  .opt[disabled]{cursor:default}
+  .verdict-line{margin-top:16px;padding:12px 14px;border-radius:8px;font-size:15px;display:none}
+  .verdict-line.show{display:block}
+  .verdict-line.ok{background:rgba(46,125,50,.14);border:1px solid #2e7d32;color:#b7e0b8}
+  .verdict-line.no{background:rgba(139,26,26,.14);border:1px solid #8b1a1a;color:#f0b7b7}
+  .verdict-line b{color:var(--gold)}
+
+  .next{margin-top:20px;display:none}
+  .next.show{display:block}
+
+  /* Result */
+  .result{text-align:center}
+  .score-big{font-size:64px;color:var(--gold);font-weight:bold;letter-spacing:2px;text-shadow:0 0 30px rgba(212,175,55,.3)}
+  .score-sub{color:var(--muted);margin-bottom:6px}
+  .rank{
+    font-size:clamp(26px,6vw,38px);color:#fff;margin:14px 0 6px;
+    letter-spacing:1px;
+  }
+  .rank-tag{display:inline-block;color:var(--gold);font-size:13px;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+  .rank-desc{color:#d0cabd;font-size:17px;font-style:italic;max-width:520px;margin:0 auto 22px}
+
+  /* Certificate */
+  .cert{
+    margin:22px 0;padding:26px 22px;border:2px solid var(--gold);
+    border-radius:12px;background:
+      repeating-linear-gradient(45deg,rgba(212,175,55,.03) 0 10px,transparent 10px 20px),
+      #14110b;
+    position:relative;
+  }
+  .cert::before,.cert::after{content:"★";position:absolute;color:var(--gold);font-size:18px;opacity:.7}
+  .cert::before{top:10px;left:12px}
+  .cert::after{bottom:10px;right:12px}
+  .cert h3{color:var(--gold);letter-spacing:3px;font-size:14px;text-transform:uppercase;margin-bottom:6px}
+  .cert .name{font-size:24px;color:#fff;margin:8px 0;border-bottom:1px solid var(--line);display:inline-block;padding:4px 20px 8px;min-width:200px}
+  .cert .cert-rank{font-size:20px;color:var(--gold);margin:10px 0 4px}
+  .cert .seal{margin-top:14px;font-size:12px;color:var(--muted);letter-spacing:1px}
+  .cert-input{
+    background:#0d0b12;border:1px solid var(--line);color:#fff;
+    font-family:inherit;font-size:18px;text-align:center;
+    border-radius:8px;padding:10px 14px;margin:6px auto 4px;display:block;
+    width:100%;max-width:320px;
+  }
+  .cert-input:focus{outline:none;border-color:var(--gold)}
+
+  .footer{text-align:center;color:#5f5a51;font-size:12px;margin-top:28px;letter-spacing:1px}
+  .footer b{color:var(--gold)}
+  .hidden{display:none}
+  .fade{animation:fade .4s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="crest">★ Братва · Честь · Пацанский кодекс ★</div>
+    <h1>ЭКЗАМЕН<br><span class="q">по «Бригаде»</span></h1>
+    <div class="sub">«Не важно, кто ты. Важно, что ты знаешь.»</div>
+  </div>
+
+  <!-- INTRO -->
+  <div class="card fade" id="screen-intro">
+    <p class="lead">Аттестационная комиссия двора приветствует тебя. Чтобы называться <b style="color:var(--gold)">своим</b>, нужно доказать, что сериал «Бригада» (2002) ты знаешь не по обрывкам, а как родной подъезд.</p>
+    <ul class="rules">
+      <li>Вопросов — <b id="q-count">…</b>. На каждый один правильный ответ.</li>
+      <li>На весь экзамен — <b>таймер</b>. Тянуть резину не по-пацански.</li>
+      <li>По итогу — <b>масть</b>: узнаешь, кто ты по бригаде.</li>
+      <li>Сдал — получи именной <b>сертификат</b> и хвастайся.</li>
+    </ul>
+    <button class="btn" onclick="Quiz.start()">Зайти на район →</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="card fade hidden" id="screen-quiz">
+    <div class="hud">
+      <span id="progress-text">Вопрос 1</span>
+      <span class="timer" id="timer">04:00</span>
+    </div>
+    <div class="bar"><i id="bar"></i></div>
+    <div class="qnum" id="qnum">Вопрос 1</div>
+    <div class="qtext" id="qtext">…</div>
+    <div class="opts" id="opts"></div>
+    <div class="verdict-line" id="expl"></div>
+    <div class="next" id="next-wrap">
+      <button class="btn" id="next-btn" onclick="Quiz.next()">Дальше →</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="card fade hidden result" id="screen-result">
+    <div class="score-sub">Твой результат</div>
+    <div class="score-big"><span id="score">0</span>/<span id="score-max">0</span></div>
+    <div class="rank-tag" id="rank-tag">масть определена</div>
+    <div class="rank" id="rank">…</div>
+    <div class="rank-desc" id="rank-desc">…</div>
+
+    <div class="cert" id="cert">
+      <h3>★ Сертификат пацана ★</h3>
+      <div style="color:var(--muted);font-size:13px">Настоящим удостоверяется, что</div>
+      <input class="cert-input" id="cert-name" placeholder="впиши имя именинника" maxlength="28">
+      <div style="color:var(--muted);font-size:13px;margin-top:6px">прошёл аттестацию по сериалу «Бригада» с мастью</div>
+      <div class="cert-rank" id="cert-rank">…</div>
+      <div class="seal">Комиссия двора · <span id="cert-date"></span> · печать ★</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn ghost" onclick="Quiz.restart()">Пересдать</button>
+      <button class="btn" onclick="Quiz.share()">Поделиться</button>
+    </div>
+    <div class="footer">Сделано с уважением к братве · <b>«Бригада»</b> · 2002</div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "В каком году вышел сериал «Бригада»?",
+    o: ["1998", "2000", "2002", "2005"],
+    a: 2,
+    e: "Премьера состоялась в 2002 году на канале «Россия» — и мгновенно стала культовой."
+  },
+  {
+    q: "Кто сыграл Сашу Белого (Александра Белова)?",
+    o: ["Дмитрий Дюжев", "Сергей Безруков", "Владимир Вдовиченков", "Павел Майков"],
+    a: 1,
+    e: "Роль Саши Белого сделала Сергея Безрукова всенародно известным."
+  },
+  {
+    q: "Как настоящая фамилия Саши Белого?",
+    o: ["Белкин", "Беляев", "Белов", "Белый"],
+    a: 2,
+    e: "Александр Николаевич Белов. «Белый» — это уже дворовая кличка."
+  },
+  {
+    q: "Кто НЕ входит в бригаду четырёх друзей?",
+    o: ["Космос", "Пчёла", "Фил", "Каверин"],
+    a: 3,
+    e: "Друзья с детства — Белый, Космос, Пчёла и Фил. А Каверин — совсем из другой оперы."
+  },
+  {
+    q: "Кого из бригады сыграл Дмитрий Дюжев?",
+    o: ["Космоса", "Пчёлу", "Фила", "Введенского"],
+    a: 0,
+    e: "Дмитрий Дюжев — это Космос, тот самый рассудительный здоровяк."
+  },
+  {
+    q: "Кто по профессии Космос в начале сериала?",
+    o: ["Таксист", "Врач", "Механик в автосервисе", "Учитель"],
+    a: 1,
+    e: "Космос — врач, поэтому в бригаде он не раз штопал друзей по-тихому."
+  },
+  {
+    q: "Как зовут любимую женщину, а затем жену Саши Белого?",
+    o: ["Марина", "Ольга", "Катя", "Вера"],
+    a: 1,
+    e: "Ольга (её сыграла Екатерина Гусева) — главная любовь и жена Белова."
+  },
+  {
+    q: "С чего у Саши Белого начинаются проблемы в самом начале сериала?",
+    o: ["Возвращается из армии", "Проигрывает в карты", "Открывает ларёк", "Уезжает за границу"],
+    a: 0,
+    e: "Белов возвращается из армии — и почти сразу попадает в переплёт, с которого всё и закручивается."
+  },
+  {
+    q: "Кто главный антагонист — хитрый офицер-силовик, отравляющий жизнь бригаде?",
+    o: ["Введенский", "Каверин", "Фархад", "Мухин"],
+    a: 1,
+    e: "Игорь Каверин (Андрей Панин) — тот самый скользкий силовик и главный противник Белого."
+  },
+  {
+    q: "Сколько серий в оригинальной «Бригаде»?",
+    o: ["8", "12", "15", "24"],
+    a: 2,
+    e: "Ровно 15 серий — от дворовой юности до большой политики."
+  },
+  {
+    q: "Кем в итоге становится Саша Белый, легализовавшись к финалу?",
+    o: ["Банкиром", "Депутатом Госдумы", "Губернатором", "Владельцем завода"],
+    a: 1,
+    e: "Белов идёт в политику и становится депутатом Госдумы — путь «из грязи во власть»."
+  },
+  {
+    q: "Кто снял «Бригаду» — режиссёр сериала?",
+    o: ["Алексей Балабанов", "Алексей Сидоров", "Пётр Буслов", "Егор Кончаловский"],
+    a: 1,
+    e: "Режиссёр и один из авторов сценария — Алексей Сидоров."
+  },
+  {
+    q: "Что объединяет Белого, Космоса, Пчёлу и Фила ещё до всех разборок?",
+    o: ["Служили вместе", "Дружат с детства, с одного двора", "Учились в одном вузе", "Сидели вместе"],
+    a: 1,
+    e: "Они друзья с детства из одного двора — на этом и держится весь их кодекс."
+  },
+  {
+    q: "Финал сериала. Чем Саша Белый расплачивается за свой путь наверх?",
+    o: ["Садится в тюрьму", "Теряет друзей и остаётся один", "Уезжает и всё забывает", "Мирится со всеми"],
+    a: 1,
+    e: "Расплата тяжёлая: Белов теряет друзей и остаётся, по сути, один на вершине. Цена власти."
+  }
+];
+
+const RANKS = [
+  { min: 0.90, tag:"высшая масть", name:"Саша Белый", desc:"Прирождённый лидер. Ты знаешь «Бригаду» как свой двор — за тобой бы пошли. Комиссия снимает шляпу." },
+  { min: 0.70, tag:"правая рука", name:"Космос", desc:"Надёжный и с головой. Пару деталей подзабыл, но в трудную минуту на тебя можно положиться." },
+  { min: 0.50, tag:"свой в доску", name:"Пчёла", desc:"Душа компании и заводила. Сериал любишь, но местами гонишь по верхам — пересмотри пару серий." },
+  { min: 0.30, tag:"по касательной", name:"Фил", desc:"Ты вроде рядом стоял, но экзамен учил по слухам во дворе. Есть куда расти, братан." },
+  { min: 0.0,  tag:"мимо района", name:"Случайный прохожий", desc:"Честно? Ты будто перепутал сериал. Садись, пересматривай «Бригаду» с первой серии — и приходи на пересдачу." }
+];
+
+const TOTAL_TIME = 240; // 4 минуты
+
+const Quiz = {
+  i: 0, correct: 0, answered: false, timeLeft: TOTAL_TIME, timer: null,
+
+  start(){
+    show('screen-quiz');
+    this.i=0; this.correct=0; this.timeLeft=TOTAL_TIME;
+    this.startTimer();
+    this.render();
+  },
+
+  startTimer(){
+    clearInterval(this.timer);
+    this.updateTimer();
+    this.timer = setInterval(()=>{
+      this.timeLeft--;
+      this.updateTimer();
+      if(this.timeLeft<=0){ clearInterval(this.timer); this.finish(); }
+    },1000);
+  },
+
+  updateTimer(){
+    const m=String(Math.floor(this.timeLeft/60)).padStart(2,'0');
+    const s=String(this.timeLeft%60).padStart(2,'0');
+    const el=document.getElementById('timer');
+    el.textContent=`${m}:${s}`;
+    el.classList.toggle('warn', this.timeLeft<=30);
+  },
+
+  render(){
+    this.answered=false;
+    const item=QUESTIONS[this.i];
+    document.getElementById('progress-text').textContent=`Вопрос ${this.i+1} из ${QUESTIONS.length}`;
+    document.getElementById('qnum').textContent=`Вопрос ${this.i+1}`;
+    document.getElementById('qtext').textContent=item.q;
+    document.getElementById('bar').style.width=`${(this.i/QUESTIONS.length)*100}%`;
+    const expl=document.getElementById('expl');
+    expl.className='verdict-line'; expl.innerHTML='';
+    document.getElementById('next-wrap').classList.remove('show');
+
+    const letters=['А','Б','В','Г'];
+    const opts=document.getElementById('opts');
+    opts.innerHTML='';
+    item.o.forEach((text,idx)=>{
+      const b=document.createElement('button');
+      b.className='opt';
+      b.innerHTML=`<span class="k">${letters[idx]}</span><span>${text}</span>`;
+      b.onclick=()=>this.answer(idx,b);
+      opts.appendChild(b);
+    });
+  },
+
+  answer(idx,btn){
+    if(this.answered) return;
+    this.answered=true;
+    const item=QUESTIONS[this.i];
+    const all=document.querySelectorAll('#opts .opt');
+    all.forEach((el,i)=>{
+      el.setAttribute('disabled','');
+      if(i===item.a) el.classList.add('correct');
+    });
+    const expl=document.getElementById('expl');
+    if(idx===item.a){
+      this.correct++;
+      expl.className='verdict-line ok show';
+      expl.innerHTML=`<b>В точку!</b> ${item.e}`;
+    }else{
+      btn.classList.add('wrong');
+      expl.className='verdict-line no show';
+      expl.innerHTML=`<b>Мимо.</b> ${item.e}`;
+    }
+    const nb=document.getElementById('next-btn');
+    nb.textContent = this.i===QUESTIONS.length-1 ? 'Узнать масть →' : 'Дальше →';
+    document.getElementById('next-wrap').classList.add('show');
+  },
+
+  next(){
+    if(this.i<QUESTIONS.length-1){ this.i++; this.render(); document.getElementById('screen-quiz').classList.add('fade'); setTimeout(()=>document.getElementById('screen-quiz').classList.remove('fade'),400); }
+    else this.finish();
+  },
+
+  finish(){
+    clearInterval(this.timer);
+    const ratio=this.correct/QUESTIONS.length;
+    const rank=RANKS.find(r=>ratio>=r.min);
+    show('screen-result');
+    document.getElementById('score').textContent=this.correct;
+    document.getElementById('score-max').textContent=QUESTIONS.length;
+    document.getElementById('rank-tag').textContent=rank.tag;
+    document.getElementById('rank').textContent=rank.name;
+    document.getElementById('rank-desc').textContent=rank.desc;
+    document.getElementById('cert-rank').textContent=`«${rank.name}»`;
+    document.getElementById('cert-date').textContent=new Date().toLocaleDateString('ru-RU');
+    this._rank=rank;
+  },
+
+  restart(){ show('screen-intro'); },
+
+  share(){
+    const name=document.getElementById('cert-name').value.trim()||'Пацан';
+    const txt=`${name} прошёл экзамен по сериалу «Бригада»: ${this.correct}/${QUESTIONS.length}, масть — «${this._rank.name}». А ты кто по бригаде? Проверься:`;
+    if(navigator.share){
+      navigator.share({title:'Экзамен по «Бригаде»', text:txt, url:location.href}).catch(()=>{});
+    }else{
+      navigator.clipboard?.writeText(`${txt} ${location.href}`).then(
+        ()=>alert('Результат скопирован — вставляй в чат и хвастайся!'),
+        ()=>alert(txt)
+      );
+    }
+  }
+};
+
+function show(id){
+  ['screen-intro','screen-quiz','screen-result'].forEach(s=>{
+    document.getElementById(s).classList.toggle('hidden', s!==id);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.getElementById('q-count').textContent=QUESTIONS.length;
+</script>
+</body>
+</html>
