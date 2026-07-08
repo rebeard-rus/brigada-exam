@@ -8,281 +8,340 @@
 <meta property="og:title" content="Экзамен по сериалу «Бригада»">
 <meta property="og:description" content="Не важно, кто ты. Важно, что ты знаешь. Сдай аттестацию пацана.">
 <meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#07070c;
-    --gold:#f0c14b;
-    --gold-soft:#ffe08a;
-    --gold-deep:#8a6a12;
-    --cyan:#25d0e6;
-    --magenta:#ff2e83;
-    --red:#ff3b3b;
-    --green:#37e08a;
-    --txt:#ece7dd;
-    --muted:#8f8a94;
-    --line:rgba(130,150,180,.16);
-    --card:#14141d;
-    --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
-    --disp:"Arial Black","Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
-    --body:system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    /* Surveillance green base */
+    --bg:#070a09;
+    --bg2:#0b100e;
+    --panel:#0d1210;
+    --panel-2:#101613;
+    /* Camcorder amber OSD */
+    --amber:#e6ad38;
+    --amber-soft:#f4cd78;
+    --amber-deep:#7a5a12;
+    /* Signals */
+    --rec:#e0392b;
+    --ok:#54c48a;
+    --ok-deep:#0f2a1c;
+    /* Ink */
+    --ink:#e9e5da;
+    --ink-dim:#c3c1b6;
+    --muted:#7f877d;
+    --line:rgba(150,175,150,.14);
+    --line-2:rgba(150,175,150,.22);
+    --disp:"Oswald","Arial Narrow",system-ui,sans-serif;
+    --body:"PT Sans","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{
     font-family:var(--body);
     background:
-      radial-gradient(1100px 700px at 50% -15%, #1a1626 0%, transparent 55%),
-      linear-gradient(180deg,#07070c 0%, #0a0a12 100%);
-    color:var(--txt);
+      radial-gradient(1200px 720px at 50% -10%, #10221b 0%, transparent 58%),
+      radial-gradient(900px 900px at 50% 120%, #0a1512 0%, transparent 60%),
+      linear-gradient(180deg,var(--bg) 0%, var(--bg2) 100%);
+    color:var(--ink);
     min-height:100vh;
     display:flex;align-items:flex-start;justify-content:center;
-    padding:34px 16px 90px;line-height:1.5;
+    padding:30px 15px 90px;line-height:1.55;
     overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
   }
-  .wrap{width:100%;max-width:720px;position:relative;z-index:2}
+  a{color:var(--amber)}
+  a:hover{color:var(--amber-soft)}
+  .wrap{width:100%;max-width:680px;position:relative;z-index:2}
 
-  /* ───── VHS / CRT OVERLAY ───── */
-  /* Атмосфера — на ЗАДНЕМ плане (под карточками), чтобы не мешать чтению */
+  /* ───── VHS / CRT OVERLAY (subtle, over media & title mostly) ───── */
   .vhs-bg{position:fixed;inset:0;pointer-events:none;z-index:0}
   .vhs-bg .scan{
     position:absolute;inset:0;
     background:repeating-linear-gradient(0deg,
-      rgba(0,0,0,0) 0 2px, rgba(0,0,0,.30) 2px 3px);
-    animation:flicker 5s steps(60) infinite;
+      rgba(0,0,0,0) 0 3px, rgba(0,0,0,.16) 3px 4px);
+    opacity:.55;
+    animation:flicker 6s steps(60) infinite;
   }
   .vhs-bg .grain{
-    position:absolute;inset:-50%;opacity:.06;mix-blend-mode:overlay;
+    position:absolute;inset:-50%;opacity:.045;mix-blend-mode:overlay;
     background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');
-    animation:grain .4s steps(4) infinite;
+    animation:grain .5s steps(4) infinite;
   }
   .vhs-bg .track{
-    position:absolute;left:0;right:0;height:90px;
-    background:linear-gradient(180deg,transparent,rgba(255,255,255,.10),transparent);
-    filter:blur(2px);opacity:.5;mix-blend-mode:screen;
-    animation:roll 7s linear infinite;
+    position:absolute;left:0;right:0;height:120px;
+    background:linear-gradient(180deg,transparent,rgba(180,255,210,.05),transparent);
+    filter:blur(3px);opacity:.6;mix-blend-mode:screen;
+    animation:roll 9s linear infinite;
   }
-  .vhs-bg::after{ /* vignette */
+  .vhs-bg::after{ /* green vignette */
     content:"";position:absolute;inset:0;
-    background:radial-gradient(120% 100% at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%);
+    background:radial-gradient(125% 105% at 50% 45%, transparent 52%, rgba(0,0,0,.62) 100%);
   }
-  /* Уголки-HUD — поверх всего, но только по краям экрана */
-  .vhs-hud{position:fixed;inset:0;pointer-events:none;z-index:9998}
-  .hud-tag{
-    position:absolute;font-family:var(--mono);font-size:12px;letter-spacing:2px;
-    color:rgba(236,231,221,.72);text-shadow:0 0 8px rgba(37,208,230,.4);
-    white-space:nowrap;
-  }
-  .hud-tag .dim{opacity:.5}
-  .hud-tag .rec{color:var(--red);animation:blink 1s steps(2) infinite}
-  .tl{top:16px;left:18px}
-  .tr{top:16px;right:18px}
-  .bl{bottom:16px;left:18px}
-  .br{bottom:16px;right:18px}
 
-  @keyframes flicker{0%,97%,100%{opacity:1}98%{opacity:.7}99%{opacity:.9}}
+  /* Camcorder viewfinder OSD — screen corners */
+  .osd{position:fixed;inset:0;pointer-events:none;z-index:9998}
+  .osd .br-corner{position:absolute;width:26px;height:26px;border-color:rgba(233,229,218,.35);border-style:solid;border-width:0}
+  .osd .c-tl{top:14px;left:14px;border-top-width:2px;border-left-width:2px}
+  .osd .c-tr{top:14px;right:14px;border-top-width:2px;border-right-width:2px}
+  .osd .c-bl{bottom:14px;left:14px;border-bottom-width:2px;border-left-width:2px}
+  .osd .c-br{bottom:14px;right:14px;border-bottom-width:2px;border-right-width:2px}
+  .osd-tag{
+    position:absolute;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;font-weight:500;
+    color:var(--amber);text-shadow:0 0 10px rgba(230,173,56,.35);white-space:nowrap;
+  }
+  .osd-tag.dimtag{color:rgba(233,229,218,.55);text-shadow:none}
+  .osd-tag .rec{color:var(--rec);animation:blink 1.1s steps(2) infinite}
+  .osd .tl{top:32px;left:22px}
+  .osd .tr{top:32px;right:22px;text-align:right}
+  .osd .bl{bottom:32px;left:22px}
+  .osd .br{bottom:32px;right:22px;text-align:right}
+
+  @keyframes flicker{0%,96%,100%{opacity:.55}97%{opacity:.42}98%{opacity:.5}}
   @keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-5%,3%)}50%{transform:translate(4%,-4%)}75%{transform:translate(-3%,-2%)}100%{transform:translate(3%,4%)}}
-  @keyframes roll{0%{top:-90px}100%{top:100%}}
+  @keyframes roll{0%{top:-120px}100%{top:100%}}
   @keyframes blink{50%{opacity:0}}
 
   /* ───── HEADER ───── */
-  .top{text-align:center;padding:6px 0 26px;margin-bottom:24px;position:relative}
-  .top::after{content:"";display:block;height:2px;margin-top:20px;
-    background:linear-gradient(90deg,transparent,var(--magenta),var(--gold),var(--cyan),transparent);opacity:.65}
+  .top{text-align:center;padding:2px 0 22px;margin-bottom:20px;position:relative}
   .crest{
-    font-family:var(--mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;
-    color:var(--muted);margin-bottom:14px;
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:var(--mono);font-size:10.5px;letter-spacing:2.5px;text-transform:uppercase;font-weight:500;
+    color:var(--muted);margin-bottom:16px;
+    padding:5px 12px;border:1px solid var(--line);border-radius:2px;background:rgba(0,0,0,.25);
   }
-  .crest .on{color:var(--red)}
+  .crest .dot{width:7px;height:7px;border-radius:50%;background:var(--rec);box-shadow:0 0 8px var(--rec);animation:blink 1.1s steps(2) infinite}
   h1{
     font-family:var(--disp);
-    font-size:clamp(34px,8.5vw,66px);
-    letter-spacing:1px;line-height:.98;font-weight:900;
-    text-transform:uppercase;color:#f5f0e6;
-    text-shadow:2px 0 rgba(255,46,131,.7), -2px 0 rgba(37,208,230,.7), 0 0 22px rgba(240,193,75,.2);
-    animation:glitch 6s infinite;
+    font-size:clamp(46px,12vw,88px);
+    letter-spacing:.5px;line-height:.9;font-weight:700;
+    text-transform:uppercase;color:#f3efe4;
+    text-shadow:1.5px 0 rgba(224,57,43,.55), -1.5px 0 rgba(120,200,180,.4);
   }
-  h1 .q{color:var(--gold);text-shadow:2px 0 rgba(255,46,131,.5), -2px 0 rgba(37,208,230,.5)}
+  h1 .q{
+    display:block;color:var(--amber);
+    text-shadow:1.5px 0 rgba(224,57,43,.4), -1.5px 0 rgba(120,200,180,.3), 0 0 30px rgba(230,173,56,.18);
+  }
+  h1 .glitch{animation:glitch 7s infinite}
   @keyframes glitch{
-    0%,90%,100%{transform:none}
-    91%{transform:translate(-2px,1px) skewX(-4deg)}
-    93%{transform:translate(2px,-1px) skewX(3deg)}
-    95%{transform:translate(-1px,0) skewX(-2deg)}
-    97%{transform:none}
+    0%,92%,100%{transform:none;opacity:1}
+    93%{transform:translate(-3px,0);opacity:.92}
+    94%{transform:translate(2px,0)}
+    95%{transform:translate(-1px,0)}
+    96%{transform:none}
   }
-  .sub{color:var(--muted);margin-top:14px;font-style:italic;font-size:15px;font-family:var(--body)}
+  .sub{color:var(--muted);margin-top:16px;font-style:italic;font-size:15px;font-family:var(--body)}
+  .rule{height:1px;margin-top:20px;background:linear-gradient(90deg,transparent,var(--line-2) 20%,var(--amber-deep) 50%,var(--line-2) 80%,transparent)}
 
   /* ───── CARD ───── */
   .card{
-    background:var(--card);
-    border:1px solid var(--line);border-radius:12px;padding:28px 24px;position:relative;
-    box-shadow:0 0 0 1px rgba(37,208,230,.06), 0 26px 70px rgba(0,0,0,.6), inset 0 0 60px rgba(0,0,0,.35);
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:1px solid var(--line);position:relative;
+    box-shadow:0 30px 80px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.03);
+    padding:26px 22px;
   }
-  .card::before{ /* уголок-метка кассеты */
-    content:"● REC";position:absolute;top:-1px;right:14px;transform:translateY(-50%);
-    font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--red);
-    background:var(--bg);padding:2px 8px;border:1px solid var(--line);border-radius:4px;
+  /* viewfinder brackets on the card */
+  .card > .vb{position:absolute;width:16px;height:16px;border:2px solid rgba(230,173,56,.5);pointer-events:none}
+  .card > .vb.tl{top:-1px;left:-1px;border-right:0;border-bottom:0}
+  .card > .vb.tr{top:-1px;right:-1px;border-left:0;border-bottom:0}
+  .card > .vb.bl{bottom:-1px;left:-1px;border-right:0;border-top:0}
+  .card > .vb.br{bottom:-1px;right:-1px;border-left:0;border-top:0}
+
+  /* ───── HERO (bold cast frame) ───── */
+  .hero{
+    position:relative;width:100%;aspect-ratio:16/11;overflow:hidden;
+    margin-bottom:22px;border:1px solid var(--line-2);background:#05100b;
   }
+  .hero img{
+    width:100%;height:100%;object-fit:cover;object-position:50% 22%;
+    filter:contrast(1.08) saturate(.82) brightness(.96);
+  }
+  .hero .tint{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,40,28,.15) 0%,transparent 30%,transparent 55%,rgba(5,12,9,.55) 82%,var(--panel) 100%);mix-blend-mode:multiply}
+  .hero .greenwash{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 40%,transparent 40%,rgba(8,28,20,.5) 100%);mix-blend-mode:multiply}
+  .hero .hscan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.22) 2px 3px);opacity:.5;pointer-events:none}
+  .hero .osd-line{position:absolute;left:12px;top:11px;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--amber);text-shadow:0 0 6px rgba(0,0,0,.9);display:flex;align-items:center;gap:7px}
+  .hero .osd-line .rec{color:var(--rec)}
+  .hero .osd-tc{position:absolute;right:12px;top:11px;font-family:var(--mono);font-size:10px;letter-spacing:1px;color:var(--amber);text-shadow:0 0 6px rgba(0,0,0,.9)}
+  .hero .osd-cap{position:absolute;left:12px;bottom:11px;font-family:var(--mono);font-size:9.5px;letter-spacing:2px;color:rgba(233,229,218,.7);text-transform:uppercase}
+  .hero .vb{position:absolute;width:14px;height:14px;border:2px solid rgba(233,229,218,.6);z-index:2}
+  .hero .vb.tl{top:8px;left:8px;border-right:0;border-bottom:0}
+  .hero .vb.tr{top:8px;right:8px;border-left:0;border-bottom:0}
+  .hero .vb.bl{bottom:8px;left:8px;border-right:0;border-top:0}
+  .hero .vb.br{bottom:8px;right:8px;border-left:0;border-top:0}
 
   /* ───── INTRO ───── */
-  .lead{font-size:17px;color:#ddd8cd;margin-bottom:20px}
-  .lead b{color:var(--gold)}
-  .rules{list-style:none;margin:8px 0 26px}
-  .rules li{padding:9px 0 9px 30px;position:relative;color:#cfc9bc;border-bottom:1px dashed var(--line);font-size:15px}
-  .rules li:last-child{border-bottom:0}
-  .rules li::before{content:"▶";position:absolute;left:2px;color:var(--cyan);top:9px;font-size:12px}
-  .rules b{color:var(--gold)}
+  .lead{font-size:16.5px;color:var(--ink-dim);margin-bottom:22px}
+  .lead b{color:var(--amber);font-weight:700}
+  .rules{list-style:none;margin:6px 0 26px;border-top:1px solid var(--line)}
+  .rules li{padding:12px 0 12px 34px;position:relative;color:var(--ink-dim);border-bottom:1px solid var(--line);font-size:15px}
+  .rules li::before{content:"";position:absolute;left:6px;top:16px;width:9px;height:9px;background:var(--amber);clip-path:polygon(0 0,100% 50%,0 100%)}
+  .rules b{color:var(--amber);font-weight:700}
 
   /* ───── BUTTON ───── */
   .btn{
-    display:inline-block;width:100%;
-    background:linear-gradient(180deg,var(--gold-soft),var(--gold));
-    color:#1a1408;border:none;border-radius:9px;
-    padding:16px 20px;font-size:16px;font-weight:800;
+    display:block;width:100%;
+    background:linear-gradient(180deg,var(--amber-soft),var(--amber));
+    color:#1c1405;border:none;
+    padding:16px 20px;font-size:15px;font-weight:700;
     font-family:var(--mono);letter-spacing:2px;cursor:pointer;text-transform:uppercase;
-    box-shadow:0 6px 0 var(--gold-deep), 0 0 26px rgba(240,193,75,.28);
-    transition:transform .05s ease, box-shadow .05s ease, filter .15s;
+    box-shadow:0 5px 0 var(--amber-deep);
+    transition:transform .06s ease, box-shadow .06s ease, filter .15s;
   }
-  .btn:hover{filter:brightness(1.06)}
-  .btn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--gold-deep)}
-  .btn.ghost{background:transparent;color:var(--gold);border:1px solid var(--gold);box-shadow:none}
+  .btn:hover{filter:brightness(1.07)}
+  .btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--amber-deep)}
+  .btn.ghost{background:transparent;color:var(--amber);border:1px solid var(--amber);box-shadow:none}
+  .btn.ghost:hover{background:rgba(230,173,56,.08);filter:none}
   .btn.ghost:active{transform:none}
   .btn-row{display:flex;gap:12px;margin-top:14px}
-  .btn-row .btn{width:auto;flex:1;font-size:13px;padding:14px}
+  .btn-row .btn{flex:1;font-size:12.5px;padding:14px}
 
   /* ───── QUIZ HUD ───── */
-  .hud{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;
-    font-family:var(--mono);font-size:13px;letter-spacing:1px;color:var(--muted)}
-  .hud .timer{font-variant-numeric:tabular-nums;color:var(--gold);font-weight:bold;letter-spacing:2px;
-    text-shadow:0 0 10px rgba(240,193,75,.4)}
-  .hud .timer.warn{color:var(--red);animation:pulse .8s infinite;text-shadow:0 0 12px rgba(255,59,59,.6)}
-  @keyframes pulse{50%{opacity:.4}}
-  .bar{height:6px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;margin-bottom:24px;
-    border:1px solid var(--line)}
+  .hud{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;
+    font-family:var(--mono);font-size:12px;letter-spacing:1px;color:var(--muted);font-weight:500}
+  .hud .timer{font-variant-numeric:tabular-nums;color:var(--amber);font-weight:700;letter-spacing:1.5px;
+    display:flex;align-items:center;gap:6px}
+  .hud .timer::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--rec);box-shadow:0 0 7px var(--rec)}
+  .hud .timer.warn{color:var(--rec);animation:pulse .8s infinite}
+  @keyframes pulse{50%{opacity:.45}}
+  .bar{height:5px;background:rgba(255,255,255,.05);overflow:hidden;margin-bottom:24px;border:1px solid var(--line)}
   .bar > i{display:block;height:100%;width:0;
-    background:linear-gradient(90deg,var(--magenta),var(--gold),var(--cyan));
-    box-shadow:0 0 12px rgba(240,193,75,.5);transition:width .3s ease}
+    background:linear-gradient(90deg,var(--amber-deep),var(--amber));transition:width .35s ease}
 
-  .qnum{color:var(--cyan);font-family:var(--mono);font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;opacity:.85}
-  .qtext{font-size:22px;color:#fff;margin-bottom:20px;line-height:1.35;font-weight:600}
-  .opts{display:grid;gap:12px}
+  .qnum{color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:12px}
+  .qnum b{color:var(--amber)}
+  .qtext{font-size:22px;color:#fbf8f0;margin-bottom:22px;line-height:1.4;font-weight:700;font-family:var(--disp);letter-spacing:.3px}
+  .opts{display:grid;gap:11px}
   .opt{
-    text-align:left;background:rgba(255,255,255,.03);border:1px solid var(--line);
-    color:var(--txt);border-radius:9px;padding:15px 16px;font-size:16px;font-family:var(--body);
+    text-align:left;background:rgba(255,255,255,.02);border:1px solid var(--line);
+    color:var(--ink);padding:14px 15px;font-size:16px;font-family:var(--body);
     cursor:pointer;display:flex;gap:13px;align-items:center;
-    transition:border-color .15s, background .15s, transform .05s, box-shadow .15s;
+    transition:border-color .15s, background .15s, transform .05s;
   }
-  .opt:hover{border-color:var(--cyan);background:rgba(37,208,230,.07);box-shadow:0 0 18px rgba(37,208,230,.12)}
+  .opt:hover{border-color:var(--line-2);background:rgba(230,173,56,.05)}
   .opt:active{transform:scale(.995)}
   .opt .k{
-    flex:0 0 30px;height:30px;border-radius:6px;
-    background:rgba(0,0,0,.5);border:1px solid var(--line);
+    flex:0 0 30px;height:30px;
+    background:rgba(0,0,0,.45);border:1px solid var(--line-2);
     display:flex;align-items:center;justify-content:center;
-    font-weight:bold;color:var(--gold);font-size:14px;font-family:var(--mono);
+    font-weight:700;color:var(--amber);font-size:14px;font-family:var(--mono);
   }
-  .opt.correct{border-color:var(--green);background:rgba(55,224,138,.14);box-shadow:0 0 20px rgba(55,224,138,.18)}
-  .opt.correct .k{background:var(--green);color:#04140b;border-color:var(--green)}
-  .opt.wrong{border-color:var(--red);background:rgba(255,59,59,.14)}
-  .opt.wrong .k{background:var(--red);color:#fff;border-color:var(--red)}
+  .opt.correct{border-color:var(--ok);background:rgba(84,196,138,.12)}
+  .opt.correct .k{background:var(--ok);color:var(--ok-deep);border-color:var(--ok)}
+  .opt.wrong{border-color:var(--rec);background:rgba(224,57,43,.12)}
+  .opt.wrong .k{background:var(--rec);color:#fff;border-color:var(--rec)}
   .opt[disabled]{cursor:default}
 
-  .verdict-line{margin-top:16px;padding:13px 15px;border-radius:8px;font-size:15px;display:none;line-height:1.5}
+  .verdict-line{margin-top:16px;padding:14px 15px;font-size:14.5px;display:none;line-height:1.55;border-left:3px solid}
   .verdict-line.show{display:block;animation:fade .3s ease}
-  .verdict-line.ok{background:rgba(55,224,138,.10);border:1px solid rgba(55,224,138,.5);color:#bff0d4}
-  .verdict-line.no{background:rgba(255,59,59,.10);border:1px solid rgba(255,59,59,.5);color:#f7c4c4}
-  .verdict-line b{color:var(--gold)}
+  .verdict-line.ok{background:rgba(84,196,138,.07);border-color:var(--ok);color:#c5ecd6}
+  .verdict-line.no{background:rgba(224,57,43,.07);border-color:var(--rec);color:#f2cccb}
+  .verdict-line b{color:var(--amber)}
 
   .next{margin-top:20px;display:none}
   .next.show{display:block}
 
+  .q-photo{display:block;max-width:230px;width:100%;margin:0 auto 20px;
+    border:1px solid var(--line-2);
+    filter:contrast(1.06) saturate(.82) brightness(.97)}
+
   /* ───── RESULT ───── */
   .result{text-align:center}
-  .score-sub{color:var(--cyan);font-family:var(--mono);letter-spacing:3px;text-transform:uppercase;font-size:12px;margin-bottom:8px}
-  .score-big{font-family:var(--disp);font-size:72px;color:var(--gold);font-weight:900;letter-spacing:2px;
-    text-shadow:3px 0 rgba(255,46,131,.5), -3px 0 rgba(37,208,230,.5), 0 0 34px rgba(240,193,75,.3);line-height:1}
-  .rank{font-family:var(--disp);font-size:clamp(28px,7vw,44px);color:#fff;margin:16px 0 6px;
-    letter-spacing:1px;text-transform:uppercase;
-    text-shadow:2px 0 rgba(255,46,131,.6), -2px 0 rgba(37,208,230,.6)}
-  .rank-tag{display:inline-block;color:var(--gold);font-family:var(--mono);font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
-  .rank-desc{color:#d0cabd;font-size:17px;font-style:italic;max-width:540px;margin:0 auto 22px}
+  .score-sub{color:var(--muted);font-family:var(--mono);letter-spacing:2.5px;text-transform:uppercase;font-size:11px;margin-bottom:6px}
+  .score-big{font-family:var(--disp);font-size:84px;color:var(--amber);font-weight:700;letter-spacing:1px;line-height:.95;
+    text-shadow:1.5px 0 rgba(224,57,43,.4), -1.5px 0 rgba(120,200,180,.3)}
+  .score-big span#score-max{color:var(--muted);font-size:52px}
+  .rank{font-family:var(--disp);font-size:clamp(34px,9vw,54px);color:#fbf8f0;margin:14px 0 4px;
+    letter-spacing:.5px;text-transform:uppercase;font-weight:700;
+    text-shadow:1.5px 0 rgba(224,57,43,.5), -1.5px 0 rgba(120,200,180,.4)}
+  .rank-tag{display:inline-block;color:var(--amber);font-family:var(--mono);font-size:11px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:14px;padding:4px 11px;border:1px solid var(--line-2)}
+  .rank-desc{color:var(--ink-dim);font-size:16px;font-style:italic;max-width:520px;margin:0 auto 20px}
 
   /* ───── CERTIFICATE (кассетная бирка) ───── */
   .cert{
-    margin:22px 0;padding:26px 22px;border:2px solid var(--gold);border-radius:10px;position:relative;
+    margin:22px 0;padding:26px 22px;border:1px solid var(--amber);position:relative;
     background:
-      repeating-linear-gradient(0deg, rgba(240,193,75,.04) 0 3px, transparent 3px 6px),
-      linear-gradient(180deg,#151007,#0c0a05);
-    box-shadow:0 0 30px rgba(240,193,75,.15), inset 0 0 40px rgba(0,0,0,.5);
+      repeating-linear-gradient(0deg, rgba(230,173,56,.03) 0 3px, transparent 3px 6px),
+      linear-gradient(180deg,#14100a,#0b0906);
+    box-shadow:inset 0 0 50px rgba(0,0,0,.55);
   }
-  .cert::before,.cert::after{content:"◉";position:absolute;color:var(--gold);font-size:16px;opacity:.75}
-  .cert::before{top:9px;left:12px}
-  .cert::after{bottom:9px;right:12px}
-  .cert h3{color:var(--gold);font-family:var(--mono);letter-spacing:3px;font-size:13px;text-transform:uppercase;margin-bottom:8px}
-  .cert .cert-rank{font-family:var(--disp);font-size:22px;color:var(--gold);margin:10px 0 4px;text-transform:uppercase;letter-spacing:1px}
-  .cert .seal{margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:1px}
-  .cert-label{color:var(--muted);font-size:13px;font-family:var(--mono);letter-spacing:1px}
+  .cert .vb{position:absolute;width:14px;height:14px;border:2px solid var(--amber)}
+  .cert .vb.tl{top:7px;left:7px;border-right:0;border-bottom:0}
+  .cert .vb.tr{top:7px;right:7px;border-left:0;border-bottom:0}
+  .cert .vb.bl{bottom:7px;left:7px;border-right:0;border-top:0}
+  .cert .vb.br{bottom:7px;right:7px;border-left:0;border-top:0}
+  .cert h3{color:var(--amber);font-family:var(--mono);letter-spacing:2.5px;font-size:12px;text-transform:uppercase;margin-bottom:6px}
+  .cert .cert-rank{font-family:var(--disp);font-size:28px;color:var(--amber);margin:8px 0 4px;text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+  .cert .seal{margin-top:14px;font-family:var(--mono);font-size:10.5px;color:var(--muted);letter-spacing:1px}
+  .cert-label{color:var(--muted);font-size:12.5px;font-family:var(--mono);letter-spacing:1px}
+  .cert-photo{display:block;width:96px;height:96px;object-fit:cover;
+    border:1px solid var(--amber);margin:6px auto 12px;
+    filter:contrast(1.06) saturate(.8)}
   .cert-input{
-    background:rgba(0,0,0,.45);border:1px solid var(--line);color:#fff;
-    font-family:var(--disp);font-size:20px;text-align:center;text-transform:uppercase;letter-spacing:1px;
-    border-radius:8px;padding:10px 14px;margin:8px auto 6px;display:block;width:100%;max-width:340px;
+    background:rgba(0,0,0,.4);border:1px solid var(--line-2);color:#fff;
+    font-family:var(--disp);font-size:22px;text-align:center;text-transform:uppercase;letter-spacing:.5px;font-weight:600;
+    padding:10px 14px;margin:8px auto 6px;display:block;width:100%;max-width:340px;
   }
-  .cert-input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 16px rgba(240,193,75,.25)}
+  .cert-input:focus{outline:none;border-color:var(--amber)}
 
-  .footer{text-align:center;color:#5f5a51;font-family:var(--mono);font-size:11px;margin-top:30px;letter-spacing:1px}
-  .footer b{color:var(--gold)}
-
-  .q-photo{display:block;max-width:240px;width:100%;margin:0 auto 20px;border-radius:10px;
-    border:2px solid var(--gold);box-shadow:0 0 26px rgba(240,193,75,.2), 0 10px 30px rgba(0,0,0,.5);
-    filter:contrast(1.05) saturate(.95)}
-  .cert-photo{display:block;width:100px;height:100px;object-fit:cover;border-radius:8px;
-    border:2px solid var(--gold);margin:8px auto 12px;
-    box-shadow:0 0 20px rgba(240,193,75,.25);filter:contrast(1.05) saturate(.92)}
-
-  /* Постер каста на главной */
-  .hero{
-    display:block;width:100%;max-width:420px;margin:0 auto 22px;
-    border-radius:12px;border:1px solid var(--line);
-    box-shadow:0 0 30px rgba(240,193,75,.12), 0 18px 44px rgba(0,0,0,.6);
-    filter:contrast(1.04) saturate(.97);
-  }
+  .footer{text-align:center;color:#5a615a;font-family:var(--mono);font-size:10.5px;margin-top:28px;letter-spacing:1px}
+  .footer b{color:var(--amber)}
 
   .hidden{display:none}
   .fade{animation:fade .4s ease}
   @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
   @media (prefers-reduced-motion:reduce){
-    .vhs-bg .scan,.vhs-bg .grain,.vhs-bg .track,h1,.hud .timer.warn{animation:none}
+    .vhs-bg .scan,.vhs-bg .grain,.vhs-bg .track,.hud .timer.warn,h1 .glitch{animation:none}
     .vhs-bg .track{display:none}
   }
   @media (max-width:600px){
-    .vhs-hud .bl,.vhs-hud .br{display:none}
+    body{padding:22px 12px 80px}
+    .osd .bl,.osd .br,.osd .c-bl,.osd .c-br{display:none}
+    .card{padding:22px 16px}
+    .qtext{font-size:20px}
+    .opt{font-size:15px}
   }
 </style>
 </head>
 <body>
-<!-- VHS-атмосфера на заднем плане (под контентом) -->
+<!-- VHS атмосфера (под контентом) -->
 <div class="vhs-bg" aria-hidden="true">
   <div class="grain"></div>
   <div class="track"></div>
   <div class="scan"></div>
 </div>
-<!-- Уголки-HUD поверх, только по краям экрана -->
-<div class="vhs-hud" aria-hidden="true">
-  <div class="hud-tag tl">▶&nbsp;PLAY&nbsp;&nbsp;<span class="dim">SP</span></div>
-  <div class="hud-tag tr"><span class="rec">●</span>&nbsp;REC&nbsp;&nbsp;<span id="vhs-time">0:00:00</span></div>
-  <div class="hud-tag bl">БРИГАДА&nbsp;<span class="dim">·</span>&nbsp;VHS</div>
-  <div class="hud-tag br"><span class="dim">TRACKING</span>&nbsp;▮▮▮▮</div>
+<!-- Камкордерный OSD по краям экрана -->
+<div class="osd" aria-hidden="true">
+  <span class="br-corner c-tl"></span><span class="br-corner c-tr"></span>
+  <span class="br-corner c-bl"></span><span class="br-corner c-br"></span>
+  <div class="osd-tag dimtag tl">▶ PLAY&nbsp;&nbsp;SP</div>
+  <div class="osd-tag tr"><span class="rec">●</span> REC&nbsp;&nbsp;<span id="vhs-time">0:00:00</span></div>
+  <div class="osd-tag dimtag bl">CAM&nbsp;01 · БРИГАДА</div>
+  <div class="osd-tag dimtag br">TRACKING ▮▮▮▮</div>
 </div>
 
 <div class="wrap">
   <div class="top">
-    <div class="crest"><span class="on">●</span>&nbsp;ЗАПИСЬ · КАССЕТА «БРИГАДА» · 1989—2002</div>
-    <h1>ЭКЗАМЕН<br><span class="q">по «Бригаде»</span></h1>
+    <div class="crest"><span class="dot"></span> ЗАПИСЬ · КАССЕТА «БРИГАДА» · 1989—2002</div>
+    <h1><span class="glitch">ЭКЗАМЕН</span><span class="q">по «Бригаде»</span></h1>
     <div class="sub">«Не важно, кто ты. Важно, что ты знаешь.»</div>
+    <div class="rule"></div>
   </div>
 
   <!-- INTRO -->
   <div class="card fade" id="screen-intro">
-    <img class="hero" src="cast.png" alt="Герои сериала «Бригада»: Космос, Пчёла, Фил, Саша Белый и Ольга">
+    <span class="vb tl"></span><span class="vb tr"></span><span class="vb bl"></span><span class="vb br"></span>
+    <div class="hero">
+      <img src="cast.png" alt="Герои сериала «Бригада»: Космос, Пчёла, Фил, Саша Белый и Ольга">
+      <div class="greenwash"></div>
+      <div class="tint"></div>
+      <div class="hscan"></div>
+      <span class="vb tl"></span><span class="vb tr"></span><span class="vb bl"></span><span class="vb br"></span>
+      <div class="osd-line"><span class="rec">●</span> ЗАПИСЬ&nbsp;&nbsp;SP</div>
+      <div class="osd-tc" id="hero-tc">0:00:00</div>
+      <div class="osd-cap">Опер. съёмка · дело №2002</div>
+    </div>
     <p class="lead">Это <b>хардкор</b>. Комиссия двора собрала вопросы для тех, кто знает «Бригаду» (2002) до последней реплики: редкие цитаты, точные даты, второй план, изнанка сюжета. Лёгких вопросов здесь нет — угадать не выйдет, только знать.</p>
     <ul class="rules">
       <li>Вопросов — <b id="q-count">…</b>. Все — на детали, а не на общие места.</li>
@@ -295,6 +354,7 @@
 
   <!-- QUIZ -->
   <div class="card fade hidden" id="screen-quiz">
+    <span class="vb tl"></span><span class="vb tr"></span><span class="vb bl"></span><span class="vb br"></span>
     <div class="hud">
       <span id="progress-text">Вопрос 1</span>
       <span class="timer" id="timer">06:00</span>
@@ -312,14 +372,16 @@
 
   <!-- RESULT -->
   <div class="card fade hidden result" id="screen-result">
+    <span class="vb tl"></span><span class="vb tr"></span><span class="vb bl"></span><span class="vb br"></span>
     <div class="score-sub">Твой результат</div>
-    <div class="score-big"><span id="score">0</span>/<span id="score-max">0</span></div>
+    <div class="score-big"><span id="score">0</span><span id="score-max">/0</span></div>
     <div class="rank-tag" id="rank-tag">масть определена</div>
     <div class="rank" id="rank">…</div>
     <div class="rank-desc" id="rank-desc">…</div>
 
     <div class="cert" id="cert">
-      <h3>◉ Сертификат пацана ◉</h3>
+      <span class="vb tl"></span><span class="vb tr"></span><span class="vb bl"></span><span class="vb br"></span>
+      <h3>Сертификат пацана</h3>
       <div id="cert-photo-wrap"></div>
       <div class="cert-label">Настоящим удостоверяется, что</div>
       <input class="cert-input" id="cert-name" placeholder="впиши имя именинника" maxlength="28">
@@ -338,12 +400,9 @@
 
 <script>
 // ── Персонализация именинника ──
-// name  — как зовут друга (появится в бонус-вопросе и сертификате)
-// photo — имя файла фото, лежащего рядом с index.html (например "friend.jpg")
 const FRIEND = { name: "Мастер Юрич", photo: "friend.png" };
 
 const QUESTIONS = [
-  // ── МАТЧАСТЬ ДЛЯ ЗНАТОКА ──
   {
     q: "Начнём жёстко. Кличка «Космос» — откуда она у Холмогорова?",
     o: ["Погоняло, полученное на зоне", "Это его настоящее имя, данное при рождении", "Армейское прозвище за высокий рост", "Дворовая кличка за мечту стать космонавтом"],
@@ -363,10 +422,10 @@ const QUESTIONS = [
     e: "Валерий Константинович Филатов — мастер спорта СССР по боксу. Оттого кулаки и чесались."
   },
   {
-    q: "В той массовой драке в воздух палят люди со стороны — и все решают, что стрельба чужая, случайная. Но кто на самом деле застрелил Муху (правда всплывёт лишь к финалу)?",
-    o: ["Охрана мероприятия — те, кто палил в воздух", "Космос", "Сам Белов", "Пчёла"],
+    q: "Кто убил Муху?",
+    o: ["Сам Белов", "Космос", "Пчёла", "Паун"],
     a: 1,
-    e: "Классическая ловушка: в воздух стреляли со стороны (охрана/организаторы), потому все и думают, что стрельба шальная. А в этой суматохе Муху тихо уложил Космос — спасая Белова от ножа. Признается он Саше только в 10-й серии. Именно этот выстрел и раскручивает всю месть Каверина."
+    e: "Муху тихо застрелил Космос — спасая Белова от ножа в той массовой драке. Признаётся он Саше лишь в 10-й серии, и именно этот выстрел раскручивает всю месть Каверина. (А «Паун» тут для настроения. 😄)"
   },
   {
     q: "В сериале ТОЧНО названа дата убийства Мухи. Какая?",
@@ -410,14 +469,12 @@ const QUESTIONS = [
     a: 1,
     e: "Сын — Иван (Ваня) Белов. В финале Белов отправляет жену с сыном в США."
   },
-  // ── ГЛУБОКАЯ ЦИТАТА ──
   {
     q: "Вор в законе Лука вспоминает Космосу давнего кореша. Как звали друга-казаха Луки и что с ним стало?",
     o: ["Байконур; зарезали в 75-м", "Байконур; посадили на 15 лет в 75-м", "Чимкент; застрелили в 80-м", "Тараз; сгинул на зоне в 78-м"],
     a: 0,
     e: "«У меня кореш был, казах, Байконуром звали. В 75-ом его зарезали» — и зловещее «у тебя всё ещё впереди» Космосу. 8-я серия."
   },
-  // ── ПРОДОЛЖИ ФРАЗУ (дословно) ──
   {
     q: "«Продолжи фразу». Любимое присловье Саши Белого: «Война — херня, главное — …»",
     o: ["…победа", "…манёвры", "…стратегия", "…приказ"],
@@ -450,7 +507,6 @@ const QUESTIONS = [
   }
 ];
 
-// Персональный бонус-вопрос с фото именинника (появляется, когда задано имя)
 if(FRIEND.name && FRIEND.name!=="ИМЯ ДРУГА") QUESTIONS.push({
   q: `Экзамен на засыпку. Кто этот легендарный человек, что гонял всех по «Бригаде»?`,
   o: [FRIEND.name, "Саша Белый собственной персоной", "Просто прохожий с района", "Сергей Безруков в гриме"],
@@ -467,7 +523,7 @@ const RANKS = [
   { min: 0.0,  tag:"мимо района", name:"Случайный прохожий", desc:"Честно? Этот экзамен собран для монстров жанра, и он тебя укатал. Не расстраивайся — таких вопросов испугался бы почти любой. По серии в вечер — и реванш." }
 ];
 
-const TOTAL_TIME = 360; // 6 минут — вопросы думательные
+const TOTAL_TIME = 360;
 
 const Quiz = {
   i: 0, correct: 0, answered: false, timeLeft: TOTAL_TIME, timer: null,
@@ -501,7 +557,7 @@ const Quiz = {
     this.answered=false;
     const item=QUESTIONS[this.i];
     document.getElementById('progress-text').textContent=`Вопрос ${this.i+1} из ${QUESTIONS.length}`;
-    document.getElementById('qnum').textContent=`Вопрос ${this.i+1}`;
+    document.getElementById('qnum').innerHTML=`Вопрос <b>${String(this.i+1).padStart(2,'0')}</b> / ${String(QUESTIONS.length).padStart(2,'0')}`;
     document.getElementById('qtext').textContent=item.q;
     const ph=document.getElementById('qphoto');
     if(item.photo){
@@ -560,7 +616,7 @@ const Quiz = {
     const rank=RANKS.find(r=>ratio>=r.min);
     show('screen-result');
     document.getElementById('score').textContent=this.correct;
-    document.getElementById('score-max').textContent=QUESTIONS.length;
+    document.getElementById('score-max').textContent='/'+QUESTIONS.length;
     document.getElementById('rank-tag').textContent=rank.tag;
     document.getElementById('rank').textContent=rank.name;
     document.getElementById('rank-desc').textContent=rank.desc;
@@ -599,15 +655,17 @@ function show(id){
 
 document.getElementById('q-count').textContent=QUESTIONS.length;
 
-// Живой таймкод кассеты в углу (только для антуража)
+// Живой таймкод кассеты (для антуража)
 (function(){
   const t=document.getElementById('vhs-time');
-  if(!t) return;
+  const h2=document.getElementById('hero-tc');
   let s=0;
   setInterval(()=>{
     s++;
     const h=Math.floor(s/3600), m=Math.floor(s/60)%60, sec=s%60;
-    t.textContent=`${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+    const tc=`${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+    if(t) t.textContent=tc;
+    if(h2) h2.textContent=tc;
   },1000);
 })();
 </script>
