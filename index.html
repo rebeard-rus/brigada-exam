@@ -169,6 +169,16 @@
 
   .footer{text-align:center;color:#5f5a51;font-size:12px;margin-top:28px;letter-spacing:1px}
   .footer b{color:var(--gold)}
+  .q-photo{
+    display:block;max-width:240px;width:100%;margin:0 auto 20px;
+    border-radius:12px;border:2px solid var(--gold);
+    box-shadow:0 10px 30px rgba(0,0,0,.5);
+  }
+  .cert-photo{
+    display:block;width:96px;height:96px;object-fit:cover;
+    border-radius:50%;border:3px solid var(--gold);
+    margin:6px auto 10px;box-shadow:0 6px 18px rgba(0,0,0,.5);
+  }
   .hidden{display:none}
   .fade{animation:fade .4s ease}
   @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -203,6 +213,7 @@
     <div class="bar"><i id="bar"></i></div>
     <div class="qnum" id="qnum">Вопрос 1</div>
     <div class="qtext" id="qtext">…</div>
+    <div id="qphoto"></div>
     <div class="opts" id="opts"></div>
     <div class="verdict-line" id="expl"></div>
     <div class="next" id="next-wrap">
@@ -220,6 +231,7 @@
 
     <div class="cert" id="cert">
       <h3>★ Сертификат пацана ★</h3>
+      <div id="cert-photo-wrap"></div>
       <div style="color:var(--muted);font-size:13px">Настоящим удостоверяется, что</div>
       <input class="cert-input" id="cert-name" placeholder="впиши имя именинника" maxlength="28">
       <div style="color:var(--muted);font-size:13px;margin-top:6px">прошёл аттестацию по сериалу «Бригада» с мастью</div>
@@ -236,6 +248,11 @@
 </div>
 
 <script>
+// ── Персонализация именинника ──
+// name  — как зовут друга (появится в бонус-вопросе и сертификате)
+// photo — имя файла фото, лежащего рядом с index.html (например "friend.jpg")
+const FRIEND = { name: "ИМЯ ДРУГА", photo: "friend.jpg" };
+
 const QUESTIONS = [
   {
     q: "В каком году вышел сериал «Бригада»?",
@@ -320,8 +337,36 @@ const QUESTIONS = [
     o: ["Садится в тюрьму", "Теряет друзей и остаётся один", "Уезжает и всё забывает", "Мирится со всеми"],
     a: 1,
     e: "Расплата тяжёлая: Белов теряет друзей и остаётся, по сути, один на вершине. Цена власти."
+  },
+  // ── ПРОДОЛЖИ ФРАЗУ ──
+  {
+    q: "Продолжи девиз сериала: «Не важно, кто ты. Важно — …»",
+    o: ["…что у тебя есть", "…кто с тобой", "…куда ты идёшь", "…кто твой враг"],
+    a: 1,
+    e: "«…кто с тобой». Тот самый девиз «Бригады» — про то, что решают не бабки, а свои люди рядом."
+  },
+  {
+    q: "Пацанский закон двора. Продолжи: «Пацан сказал — пацан …»",
+    o: ["…подумал", "…сделал", "…забыл", "…спросил"],
+    a: 1,
+    e: "«…сделал». Слово пацана — железное, иначе весь кодекс не работает."
+  },
+  {
+    q: "Про друзей из бригады. Продолжи мысль в духе Белого: «Мы с пацанами с детства — один …»",
+    o: ["…класс", "…двор", "…подъезд", "…район"],
+    a: 1,
+    e: "«…двор». Вся бригада выросла в одном дворе — на этом и держится их братство."
   }
 ];
+
+// Персональный бонус-вопрос с фото именинника (появляется, когда задано имя)
+if(FRIEND.name && FRIEND.name!=="ИМЯ ДРУГА") QUESTIONS.push({
+  q: `Экзамен на засыпку. Кто этот легендарный человек, что гонял всех по «Бригаде»?`,
+  o: [FRIEND.name, "Саша Белый собственной персоной", "Просто прохожий с района", "Сергей Безруков в гриме"],
+  a: 0,
+  e: `Правильно — это ${FRIEND.name}! Комиссия двора признаёт: по «Бригаде» тебя не переэкзаменовать. С днём рождения! 🎂`,
+  photo: FRIEND.photo
+});
 
 const RANKS = [
   { min: 0.90, tag:"высшая масть", name:"Саша Белый", desc:"Прирождённый лидер. Ты знаешь «Бригаду» как свой двор — за тобой бы пошли. Комиссия снимает шляпу." },
@@ -367,6 +412,11 @@ const Quiz = {
     document.getElementById('progress-text').textContent=`Вопрос ${this.i+1} из ${QUESTIONS.length}`;
     document.getElementById('qnum').textContent=`Вопрос ${this.i+1}`;
     document.getElementById('qtext').textContent=item.q;
+    const ph=document.getElementById('qphoto');
+    if(item.photo){
+      ph.innerHTML=`<img src="${item.photo}" alt="фото" class="q-photo" onerror="this.parentNode.style.display='none'">`;
+      ph.style.display='block';
+    }else{ ph.innerHTML=''; ph.style.display='none'; }
     document.getElementById('bar').style.width=`${(this.i/QUESTIONS.length)*100}%`;
     const expl=document.getElementById('expl');
     expl.className='verdict-line'; expl.innerHTML='';
@@ -425,6 +475,11 @@ const Quiz = {
     document.getElementById('rank-desc').textContent=rank.desc;
     document.getElementById('cert-rank').textContent=`«${rank.name}»`;
     document.getElementById('cert-date').textContent=new Date().toLocaleDateString('ru-RU');
+    document.getElementById('cert-photo-wrap').innerHTML=
+      `<img src="${FRIEND.photo}" alt="фото" class="cert-photo" onerror="this.style.display='none'">`;
+    if(FRIEND.name && FRIEND.name!=="ИМЯ ДРУГА"){
+      document.getElementById('cert-name').value=FRIEND.name;
+    }
     this._rank=rank;
   },
 
